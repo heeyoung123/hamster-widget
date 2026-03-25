@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 
-type HamsterState = "running" | "eating" | "sleeping" | "bowing";
+type HamsterState = "running" | "eating" | "sleeping" | "hungry" | "bowing";
 
 interface Acorn {
   id: number;
@@ -98,7 +98,7 @@ export default function Home() {
 
       {/* State selector for preview */}
       <div className="flex gap-3 mt-8">
-        {(["running", "eating", "sleeping"] as HamsterState[]).map((s) => (
+        {(["running", "eating", "sleeping", "hungry"] as HamsterState[]).map((s) => (
           <button
             key={s}
             onClick={() => setHamsterState(s)}
@@ -108,7 +108,7 @@ export default function Home() {
                 : "bg-amber-100 text-amber-700 hover:bg-amber-200"
             }`}
           >
-            {s === "running" ? "💃 춤추기" : s === "eating" ? "🌰 먹기" : "😴 자기"}
+            {s === "running" ? "💃 춤추기" : s === "eating" ? "🌰 먹기" : s === "sleeping" ? "😴 자기" : "🍽️ 배고파"}
           </button>
         ))}
       </div>
