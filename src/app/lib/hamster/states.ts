@@ -40,13 +40,7 @@ export async function getTodayCommitCount(): Promise<number> {
   const fromISO = `${todayKST}T00:00:00+09:00`;
   const toISO   = `${todayKST}T23:59:59+09:00`;
 
-  const query = `{
-    user(login: "${user}") {
-      contributionsCollection(from: "${fromISO}", to: "${toISO}") {
-        totalCommitContributions
-      }
-    }
-  }`;
+  const query = `{ user(login: "${user}") { contributionsCollection(from: "${fromISO}", to: "${toISO}") { totalCommitContributions } } }`;
 
   try {
     const res = await fetch('https://api.github.com/graphql', {
@@ -63,9 +57,14 @@ export async function getTodayCommitCount(): Promise<number> {
 
     const json = await res.json() as {
       data?: { user?: { contributionsCollection?: { totalCommitContributions?: number } } };
+      errors?: unknown[];
     };
 
-    return json.data?.user?.contributionsCollection?.totalCommitContributions ?? 0;
+    if (json.errors) return 1;
+
+    const count = json.data?.user?.contributionsCollection?.totalCommitContributions;
+    if (count === undefined || count === null) return 1;
+    return count;
   } catch {
     return 1;
   }
